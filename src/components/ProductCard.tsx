@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Product } from "@/types";
 import { useCart } from "@/hooks/useCart";
@@ -8,9 +9,24 @@ interface ProductCardProps {
   product: Product;
 }
 
+// Emoji de fallback par catégorie
+const categoryEmojis: Record<string, string> = {
+  "Pâtes": "🍝",
+  "Café": "☕",
+  "Chocolat": "🍫",
+  "Boissons": "🥤",
+  "Produits laitiers": "🥛",
+  "Céréales": "🥣",
+};
+
 export default function ProductCard({ product }: ProductCardProps) {
   const { selectedProducts, toggleProduct } = useCart();
   const isSelected = selectedProducts.includes(product.id);
+  const [imageError, setImageError] = useState(false);
+
+  // Vérifie si c'est une URL d'image
+  const isImageUrl = product.image.startsWith("http");
+  const fallbackEmoji = categoryEmojis[product.category] || "📦";
 
   return (
     <motion.div
@@ -51,7 +67,18 @@ export default function ProductCard({ product }: ProductCardProps) {
         </motion.div>
       )}
 
-      <div className="text-4xl mb-3 text-center">{product.image}</div>
+      <div className="h-20 mb-3 flex items-center justify-center">
+        {isImageUrl && !imageError ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            className="max-h-full max-w-full object-contain rounded"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <span className="text-4xl">{imageError ? fallbackEmoji : product.image}</span>
+        )}
+      </div>
 
       <div className="space-y-1">
         <p className="text-xs text-white/50 uppercase tracking-wider">
