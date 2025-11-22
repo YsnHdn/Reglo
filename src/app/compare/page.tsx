@@ -1,13 +1,19 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { StoreClusterCard } from "@/components";
 import { useCart } from "@/hooks/useCart";
 
 export default function ComparePage() {
-  const { getStoreClusters, selectedCount, selectedProducts } = useCart();
-  const clusters = getStoreClusters();
+  const { selectedCount, fetchComparison, isLoading, comparison } = useCart();
+
+  useEffect(() => {
+    if (selectedCount > 0) {
+      fetchComparison();
+    }
+  }, [selectedCount, fetchComparison]);
 
   if (selectedCount === 0) {
     return (
@@ -39,7 +45,47 @@ export default function ComparePage() {
     );
   }
 
-  // Calculer les économies potentielles
+  if (isLoading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        <div className="flex flex-col items-center justify-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500 mb-4"></div>
+          <p className="text-white/60">Comparaison des prix en cours...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!comparison || comparison.clusters.length === 0) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <span className="text-6xl mb-6 block">⚠️</span>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Erreur de chargement
+          </h1>
+          <p className="text-white/60 mb-8">
+            Impossible de récupérer les prix. Vérifiez que le backend est démarré.
+          </p>
+          <Link href="/">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-semibold"
+            >
+              Retour aux produits
+            </motion.button>
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
+
+  const { clusters, summary } = comparison;
   const maxTotal = Math.max(...clusters.map((c) => c.totalPrice));
   const minTotal = Math.min(...clusters.map((c) => c.totalPrice));
   const potentialSavings = maxTotal - minTotal;
@@ -74,7 +120,7 @@ export default function ComparePage() {
               {potentialSavings.toFixed(2)} €
             </p>
             <p className="text-white/50 text-sm mt-1">
-              en choisissant le magasin le moins cher
+              en choisissant {summary.cheapestStore}
             </p>
           </div>
           <div className="flex gap-4">
@@ -99,7 +145,27 @@ export default function ComparePage() {
         {clusters.map((cluster, index) => (
           <StoreClusterCard
             key={cluster.store.id}
-            cluster={cluster}
+            cluster={{
+              store: {
+                id: cluster.store.id,
+                name: cluster.store.name,
+                logo: cluster.store.logo,
+                color: cluster.store.color,
+              },
+              products: cluster.products.map((p) => ({
+                id: p.id,
+                name: p.name,
+                brand: p.brand,
+                category: "",
+                image: p.image_url || "📦",
+                unit: p.unit,
+                price: p.price,
+                available: p.available,
+                isCheapest: p.isCheapest,
+              })),
+              totalPrice: cluster.totalPrice,
+              savings: cluster.savings,
+            }}
             rank={index + 1}
           />
         ))}
