@@ -1,15 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ProductCard, CategoryFilter } from "@/components";
-import { products, categories } from "@/data/products";
 import { useCart } from "@/hooks/useCart";
+import { getProducts, Product } from "@/services/api";
+
+const categories = [
+  "Tous",
+  "Pâtes",
+  "Café",
+  "Chocolat",
+  "Boissons",
+  "Produits laitiers",
+  "Céréales",
+];
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("Tous");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { selectedCount } = useCart();
+
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        setIsLoading(true);
+        const data = await getProducts();
+        setProducts(data);
+        setError(null);
+      } catch (err) {
+        setError("Impossible de charger les produits. Vérifiez que le backend est démarré.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadProducts();
+  }, []);
 
   const filteredProducts =
     selectedCategory === "Tous"
@@ -48,17 +79,57 @@ export default function Home() {
         />
       </motion.div>
 
+      {/* Error Message */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="bg-red-500/20 border border-red-500 rounded-lg p-4 mb-8 text-center"
+        >
+          <p className="text-red-400">{error}</p>
+          <p className="text-white/50 text-sm mt-2">
+            Lancez le backend avec: <code className="bg-white/10 px-2 py-1 rounded">cd backend && npm run start</code>
+          </p>
+        </motion.div>
+      )}
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        </div>
+      )}
+
       {/* Products Grid */}
-      <motion.div
-        layout
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
-      >
-        <AnimatePresence mode="popLayout">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </AnimatePresence>
-      </motion.div>
+      {!isLoading && !error && (
+        <motion.div
+          layout
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  brand: product.brand,
+                  category: product.category,
+                  image: product.image_url || "📦",
+                  unit: product.unit,
+                }}
+              />
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !error && filteredProducts.length === 0 && (
+        <div className="text-center py-20">
+          <p className="text-white/50">Aucun produit trouvé dans cette catégorie.</p>
+        </div>
+      )}
 
       {/* Floating Action Button */}
       <AnimatePresence>

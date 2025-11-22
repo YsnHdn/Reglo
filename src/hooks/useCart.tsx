@@ -1,88 +1,58 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { StoreCluster, ProductWithPrice } from "@/types";
-import { products } from "@/data/products";
-import { stores, productPrices } from "@/data/stores";
+import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { compareProducts, ComparisonResult, StoreCluster } from "@/services/api";
 
 interface CartContextType {
   selectedProducts: string[];
   toggleProduct: (productId: string) => void;
   clearCart: () => void;
-  getStoreClusters: () => StoreCluster[];
+  fetchComparison: () => Promise<ComparisonResult | null>;
   selectedCount: number;
+  isLoading: boolean;
+  comparison: ComparisonResult | null;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [comparison, setComparison] = useState<ComparisonResult | null>(null);
 
-  const toggleProduct = (productId: string) => {
+  const toggleProduct = useCallback((productId: string) => {
     setSelectedProducts((prev) =>
       prev.includes(productId)
         ? prev.filter((id) => id !== productId)
         : [...prev, productId]
     );
-  };
+    // Reset comparison when selection changes
+    setComparison(null);
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setSelectedProducts([]);
-  };
+    setComparison(null);
+  }, []);
 
-  const getStoreClusters = (): StoreCluster[] => {
-    if (selectedProducts.length === 0) return [];
+  const fetchComparison = useCallback(async (): Promise<ComparisonResult | null> => {
+    if (selectedProducts.length === 0) {
+      setComparison(null);
+      return null;
+    }
 
-    // Pour chaque produit sélectionné, trouver le prix le moins cher
-    const cheapestPrices: Record<string, number> = {};
-    selectedProducts.forEach((productId) => {
-      const prices = productPrices
-        .filter((pp) => pp.productId === productId && pp.available)
-        .map((pp) => pp.price);
-      if (prices.length > 0) {
-        cheapestPrices[productId] = Math.min(...prices);
-      }
-    });
-
-    // Créer les clusters pour chaque magasin
-    const clusters: StoreCluster[] = stores.map((store) => {
-      const storeProducts: ProductWithPrice[] = selectedProducts.map(
-        (productId) => {
-          const product = products.find((p) => p.id === productId)!;
-          const priceInfo = productPrices.find(
-            (pp) => pp.productId === productId && pp.storeId === store.id
-          );
-
-          return {
-            ...product,
-            price: priceInfo?.price ?? 0,
-            available: priceInfo?.available ?? false,
-            isCheapest: priceInfo?.price === cheapestPrices[productId],
-          };
-        }
-      );
-
-      const totalPrice = storeProducts
-        .filter((p) => p.available)
-        .reduce((sum, p) => sum + p.price, 0);
-
-      return {
-        store,
-        products: storeProducts,
-        totalPrice,
-        savings: 0, // Sera calculé après
-      };
-    });
-
-    // Calculer les économies par rapport au magasin le plus cher
-    const maxTotal = Math.max(...clusters.map((c) => c.totalPrice));
-    clusters.forEach((cluster) => {
-      cluster.savings = maxTotal - cluster.totalPrice;
-    });
-
-    // Trier par prix total (moins cher en premier)
-    return clusters.sort((a, b) => a.totalPrice - b.totalPrice);
-  };
+    setIsLoading(true);
+    try {
+      const result = await compareProducts(selectedProducts);
+      setComparison(result);
+      return result;
+    } catch (error) {
+      console.error("Error fetching comparison:", error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedProducts]);
 
   return (
     <CartContext.Provider
@@ -90,8 +60,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
         selectedProducts,
         toggleProduct,
         clearCart,
-        getStoreClusters,
+        fetchComparison,
         selectedCount: selectedProducts.length,
+        isLoading,
+        comparison,
       }}
     >
       {children}
