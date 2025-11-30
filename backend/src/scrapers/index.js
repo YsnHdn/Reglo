@@ -1,17 +1,9 @@
-import { CarrefourScraper } from "./carrefour.js";
-import { AuchanScraper } from "./auchan.js";
-import { MonoprixScraper } from "./monoprix.js";
 import { MarjaneScraper } from "./marjane.js";
 import { MarjaneMallScraper } from "./marjanemall.js";
 import { AswakAssalamScraper } from "./aswakassalam.js";
 
-// Export all scrapers
+// Export all scrapers (Moroccan stores only)
 export const scrapers = {
-  // French stores
-  carrefour: new CarrefourScraper(),
-  auchan: new AuchanScraper(),
-  monoprix: new MonoprixScraper(),
-  // Moroccan stores
   marjane: new MarjaneScraper(),
   marjanemall: new MarjaneMallScraper(),
   aswakassalam: new AswakAssalamScraper(),

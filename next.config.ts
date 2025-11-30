@@ -4,14 +4,25 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "images.openfoodfacts.org",
-        pathname: "/images/products/**",
+        protocol: "http",
+        hostname: "localhost",
+        port: "3001",
+        pathname: "/images/**",
       },
       {
         protocol: "https",
-        hostname: "static.openfoodfacts.org",
-        pathname: "/images/products/**",
+        hostname: "www.marjane.ma",
+        pathname: "/media/catalog/product/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.marjanemall.ma",
+        pathname: "/media/catalog/product/**",
+      },
+      {
+        protocol: "https",
+        hostname: "aswakassalam.com",
+        pathname: "/**",
       },
     ],
   },

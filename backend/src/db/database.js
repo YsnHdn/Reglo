@@ -46,7 +46,7 @@ export function initDb() {
       product_id TEXT NOT NULL,
       store_id TEXT NOT NULL,
       price REAL NOT NULL,
-      currency TEXT DEFAULT 'EUR',
+      currency TEXT DEFAULT 'MAD',
       available INTEGER DEFAULT 1,
       scraped_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (product_id) REFERENCES products(id),
