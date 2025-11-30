@@ -97,6 +97,10 @@ export const productQueries = {
       VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     `);
   },
+  get deleteAll() {
+    initDb();
+    return db.prepare("DELETE FROM products");
+  },
 };
 
 export const storeQueries = {
@@ -114,6 +118,10 @@ export const storeQueries = {
       INSERT OR REPLACE INTO stores (id, name, logo, color, website)
       VALUES (?, ?, ?, ?, ?)
     `);
+  },
+  get deleteAll() {
+    initDb();
+    return db.prepare("DELETE FROM stores");
   },
 };
 
@@ -176,6 +184,10 @@ export const priceQueries = {
       )
       ORDER BY pr.name, p.price
     `);
+  },
+  get deleteAll() {
+    initDb();
+    return db.prepare("DELETE FROM prices");
   },
 };
 
