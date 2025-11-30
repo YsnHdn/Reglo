@@ -1,21 +1,21 @@
 /**
- * Script de seed pour initialiser la base de données avec des données réalistes
- * Ces prix sont basés sur des observations des prix réels en France (2024-2025)
+ * Script de seed pour le Maroc avec des produits réels
+ * Prix basés sur les prix moyens au Maroc en 2024-2025 (en MAD - Dirhams)
  *
- * Usage: npm run db:seed
+ * Usage: npm run db:seed:morocco
  */
 import { initDb, productQueries, priceQueries, storeQueries } from "./database.js";
 
-// Magasins
+// Magasins marocains
 const stores = [
-  { id: "carrefour", name: "Carrefour", logo: "🔵", color: "#004E9A", website: "https://www.carrefour.fr" },
-  { id: "auchan", name: "Auchan", logo: "🔴", color: "#E30613", website: "https://www.auchan.fr" },
-  { id: "monoprix", name: "Monoprix", logo: "🟠", color: "#E4002B", website: "https://www.monoprix.fr" },
-  { id: "lidl", name: "Lidl", logo: "🟡", color: "#0050AA", website: "https://www.lidl.fr" },
-  { id: "leclerc", name: "E.Leclerc", logo: "🔵", color: "#005BAC", website: "https://www.leclercdrive.fr" },
+  { id: "marjane", name: "Marjane", logo: "🔴", color: "#E30613", website: "https://www.marjane.ma" },
+  { id: "marjanemall", name: "Marjane Mall", logo: "🟠", color: "#FF6B00", website: "https://www.marjanemall.ma" },
+  { id: "aswakassalam", name: "Aswak Assalam", logo: "🟢", color: "#00A651", website: "https://aswakassalam.com" },
+  { id: "carrefour", name: "Carrefour", logo: "🔵", color: "#004E9A", website: "https://www.carrefour.ma" },
+  { id: "acima", name: "Acima", logo: "🟡", color: "#FDB913", website: "https://www.acima.ma" },
 ];
 
-// Produits avec prix réalistes par magasin (prix en euros, basés sur les prix réels 2024-2025)
+// Produits marocains réels avec prix en MAD (Dirhams marocains)
 const productsWithPrices = [
   // PÂTES
   {
@@ -24,14 +24,14 @@ const productsWithPrices = [
     name: "Spaghetti n°5",
     brand: "Panzani",
     category: "Pâtes",
-    image_url: "https://images.openfoodfacts.org/images/products/303/835/001/2005/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/3/0/3038350012005_1.jpg",
     unit: "500g",
     prices: {
-      carrefour: 1.45,
-      auchan: 1.39,
-      monoprix: 1.75,
-      lidl: 1.29,
-      leclerc: 1.35,
+      marjane: 10.95,
+      marjanemall: 11.50,
+      aswakassalam: 11.20,
+      carrefour: 10.90,
+      acima: 11.00,
     },
   },
   {
@@ -40,30 +40,30 @@ const productsWithPrices = [
     name: "Penne Rigate n°73",
     brand: "Barilla",
     category: "Pâtes",
-    image_url: "https://images.openfoodfacts.org/images/products/807/680/010/5735/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/8/0/8076800105735_1.jpg",
     unit: "500g",
     prices: {
-      carrefour: 1.65,
-      auchan: 1.55,
-      monoprix: 1.89,
-      lidl: 1.49,
-      leclerc: 1.52,
+      marjane: 13.50,
+      marjanemall: 14.00,
+      aswakassalam: 13.80,
+      carrefour: 13.30,
+      acima: 13.60,
     },
   },
   {
-    id: "lustucru-coquillettes-500g",
-    barcode: "3250392665500",
-    name: "Coquillettes",
-    brand: "Lustucru",
+    id: "dari-couscous-moyen-1kg",
+    barcode: "6111000011001",
+    name: "Couscous Moyen",
+    brand: "Dari",
     category: "Pâtes",
-    image_url: "https://images.openfoodfacts.org/images/products/325/039/266/5500/front_fr.jpg",
-    unit: "500g",
+    image_url: "https://www.marjanemall.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/6/1/6111000011001.jpg",
+    unit: "1kg",
     prices: {
-      carrefour: 1.25,
-      auchan: 1.22,
-      monoprix: 1.49,
-      lidl: 1.19,
-      leclerc: 1.20,
+      marjane: 12.90,
+      marjanemall: 13.20,
+      aswakassalam: 12.80,
+      carrefour: 13.00,
+      acima: 12.70,
     },
   },
 
@@ -74,30 +74,14 @@ const productsWithPrices = [
     name: "Café Moulu Classique",
     brand: "Carte Noire",
     category: "Café",
-    image_url: "https://images.openfoodfacts.org/images/products/762/221/014/6960/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/7/6/7622210146960_1.jpg",
     unit: "250g",
     prices: {
-      carrefour: 4.89,
-      auchan: 4.75,
-      monoprix: 5.29,
-      lidl: 4.49,
-      leclerc: 4.59,
-    },
-  },
-  {
-    id: "lavazza-qualita-oro-250g",
-    barcode: "8000070012677",
-    name: "Qualità Oro",
-    brand: "Lavazza",
-    category: "Café",
-    image_url: "https://images.openfoodfacts.org/images/products/800/007/001/2677/front_fr.jpg",
-    unit: "250g",
-    prices: {
-      carrefour: 5.49,
-      auchan: 5.29,
-      monoprix: 5.89,
-      lidl: 4.99,
-      leclerc: 5.15,
+      marjane: 48.90,
+      marjanemall: 49.50,
+      aswakassalam: 49.20,
+      carrefour: 48.50,
+      acima: 49.00,
     },
   },
   {
@@ -106,14 +90,30 @@ const productsWithPrices = [
     name: "Gold",
     brand: "Nescafé",
     category: "Café",
-    image_url: "https://images.openfoodfacts.org/images/products/761/303/405/6467/front_fr.jpg",
+    image_url: "https://www.marjanemall.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/7/6/7613034056467.jpg",
     unit: "200g",
     prices: {
-      carrefour: 7.99,
-      auchan: 7.79,
-      monoprix: 8.49,
-      lidl: null, // Non disponible
-      leclerc: 7.65,
+      marjane: 79.90,
+      marjanemall: 80.50,
+      aswakassalam: null, // Non disponible
+      carrefour: 78.90,
+      acima: 79.50,
+    },
+  },
+  {
+    id: "cafe-najjar-250g",
+    barcode: "5291001801011",
+    name: "Café Moulu avec Cardamome",
+    brand: "Najjar",
+    category: "Café",
+    image_url: "https://www.marjanemall.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/5/2/5291001801011.jpg",
+    unit: "250g",
+    prices: {
+      marjane: 42.90,
+      marjanemall: 43.50,
+      aswakassalam: 43.20,
+      carrefour: 42.50,
+      acima: 43.00,
     },
   },
 
@@ -124,30 +124,30 @@ const productsWithPrices = [
     name: "Chocolat au Lait des Alpes",
     brand: "Milka",
     category: "Chocolat",
-    image_url: "https://images.openfoodfacts.org/images/products/762/221/010/0467/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/7/6/7622210100467_1.jpg",
     unit: "100g",
     prices: {
-      carrefour: 1.89,
-      auchan: 1.79,
-      monoprix: 2.15,
-      lidl: 1.59,
-      leclerc: 1.69,
+      marjane: 16.90,
+      marjanemall: 17.50,
+      aswakassalam: 17.20,
+      carrefour: 16.50,
+      acima: 17.00,
     },
   },
   {
-    id: "lindt-excellence-70-100g",
-    barcode: "3046920028363",
-    name: "Excellence Noir 70%",
-    brand: "Lindt",
+    id: "aiguebelle-lait-100g",
+    barcode: "6111851000015",
+    name: "Chocolat au Lait",
+    brand: "Aiguebelle",
     category: "Chocolat",
-    image_url: "https://images.openfoodfacts.org/images/products/304/692/002/8363/front_fr.jpg",
+    image_url: "https://www.marjanemall.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/6/1/6111851000015.jpg",
     unit: "100g",
     prices: {
-      carrefour: 2.49,
-      auchan: 2.39,
-      monoprix: 2.79,
-      lidl: null, // Non disponible
-      leclerc: 2.35,
+      marjane: 9.90,
+      marjanemall: 10.20,
+      aswakassalam: 9.80,
+      carrefour: 9.70,
+      acima: 9.85,
     },
   },
   {
@@ -156,132 +156,132 @@ const productsWithPrices = [
     name: "Lait Noisettes Entières",
     brand: "Côte d'Or",
     category: "Chocolat",
-    image_url: "https://images.openfoodfacts.org/images/products/541/003/300/2133/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/5/4/5410033002133_1.jpg",
     unit: "200g",
     prices: {
-      carrefour: 3.29,
-      auchan: 3.15,
-      monoprix: 3.69,
-      lidl: 2.99,
-      leclerc: 3.09,
+      marjane: 32.90,
+      marjanemall: 33.50,
+      aswakassalam: 33.20,
+      carrefour: 32.50,
+      acima: 33.00,
     },
   },
 
   // BOISSONS
   {
-    id: "coca-cola-original-1.5l",
+    id: "coca-cola-1.5l",
     barcode: "5449000000996",
     name: "Coca-Cola Original",
     brand: "Coca-Cola",
     category: "Boissons",
-    image_url: "https://images.openfoodfacts.org/images/products/544/900/000/0996/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/5/4/5449000000996_1.jpg",
     unit: "1.5L",
     prices: {
-      carrefour: 1.99,
-      auchan: 1.89,
-      monoprix: 2.29,
-      lidl: 1.79,
-      leclerc: 1.85,
+      marjane: 8.90,
+      marjanemall: 9.20,
+      aswakassalam: 9.00,
+      carrefour: 8.80,
+      acima: 8.95,
     },
   },
   {
-    id: "evian-1.5l",
-    barcode: "3068320011349",
+    id: "hawai-ananas-1l",
+    barcode: "6111011100014",
+    name: "Jus d'Ananas",
+    brand: "Hawai",
+    category: "Boissons",
+    image_url: "https://www.marjanemall.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/6/1/6111011100014.jpg",
+    unit: "1L",
+    prices: {
+      marjane: 9.50,
+      marjanemall: 9.80,
+      aswakassalam: 9.60,
+      carrefour: 9.40,
+      acima: 9.55,
+    },
+  },
+  {
+    id: "sidi-ali-1.5l",
+    barcode: "6111000101012",
     name: "Eau Minérale Naturelle",
-    brand: "Evian",
+    brand: "Sidi Ali",
     category: "Boissons",
-    image_url: "https://images.openfoodfacts.org/images/products/306/832/001/1349/front_fr.jpg",
+    image_url: "https://www.marjanemall.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/6/1/6111000101012.jpg",
     unit: "1.5L",
     prices: {
-      carrefour: 0.89,
-      auchan: 0.85,
-      monoprix: 1.09,
-      lidl: 0.79,
-      leclerc: 0.82,
-    },
-  },
-  {
-    id: "orangina-original-1.5l",
-    barcode: "3249390003556",
-    name: "Orangina Original",
-    brand: "Orangina",
-    category: "Boissons",
-    image_url: "https://images.openfoodfacts.org/images/products/324/939/000/3556/front_fr.jpg",
-    unit: "1.5L",
-    prices: {
-      carrefour: 2.15,
-      auchan: 2.05,
-      monoprix: 2.45,
-      lidl: 1.95,
-      leclerc: 1.99,
+      marjane: 4.50,
+      marjanemall: 4.70,
+      aswakassalam: 4.60,
+      carrefour: 4.40,
+      acima: 4.55,
     },
   },
 
   // PRODUITS LAITIERS
   {
-    id: "lactel-demi-ecreme-1l",
-    barcode: "3428274370003",
+    id: "centrale-lait-demi-ecreme-1l",
+    barcode: "6111008000011",
     name: "Lait Demi-écrémé",
-    brand: "Lactel",
+    brand: "Centrale Danone",
     category: "Produits laitiers",
-    image_url: "https://images.openfoodfacts.org/images/products/342/827/437/0003/front_fr.jpg",
+    image_url: "https://www.marjanemall.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/6/1/6111008000011.jpg",
     unit: "1L",
     prices: {
-      carrefour: 1.15,
-      auchan: 1.09,
-      monoprix: 1.35,
-      lidl: 0.99,
-      leclerc: 1.05,
+      marjane: 8.90,
+      marjanemall: 9.20,
+      aswakassalam: 9.00,
+      carrefour: 8.80,
+      acima: 8.95,
     },
   },
   {
-    id: "danone-nature-4x125g",
-    barcode: "3033490004149",
+    id: "activia-nature-4x125g",
+    barcode: "6111008100012",
     name: "Yaourt Nature",
-    brand: "Danone",
+    brand: "Activia",
     category: "Produits laitiers",
-    image_url: "https://images.openfoodfacts.org/images/products/303/349/000/4149/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/6/1/6111008100012_1.jpg",
     unit: "4x125g",
     prices: {
-      carrefour: 1.79,
-      auchan: 1.69,
-      monoprix: 2.05,
-      lidl: 1.59,
-      leclerc: 1.65,
+      marjane: 11.90,
+      marjanemall: 12.20,
+      aswakassalam: 12.00,
+      carrefour: 11.80,
+      acima: 11.95,
     },
   },
   {
-    id: "president-beurre-doux-250g",
-    barcode: "3228020480016",
+    id: "jaouda-beurre-250g",
+    barcode: "6111009000013",
     name: "Beurre Doux",
-    brand: "Président",
+    brand: "Jaouda",
     category: "Produits laitiers",
-    image_url: "https://images.openfoodfacts.org/images/products/322/802/048/0016/front_fr.jpg",
+    image_url: "https://www.marjanemall.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/6/1/6111009000013.jpg",
     unit: "250g",
     prices: {
-      carrefour: 2.89,
-      auchan: 2.75,
-      monoprix: 3.19,
-      lidl: 2.59,
-      leclerc: 2.69,
+      marjane: 23.90,
+      marjanemall: 24.50,
+      aswakassalam: 24.20,
+      carrefour: 23.50,
+      acima: 24.00,
     },
   },
 
   // CÉRÉALES
   {
-    id: "kelloggs-corn-flakes-375g",
-    barcode: "5053827165556",
-    name: "Corn Flakes",
-    brand: "Kellogg's",
+    id: "nestle-fitness-375g",
+    barcode: "7613032712914",
+    name: "Fitness Céréales",
+    brand: "Nestlé",
     category: "Céréales",
-    image_url: "https://images.openfoodfacts.org/images/products/505/382/716/5556/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/7/6/7613032712914_1.jpg",
     unit: "375g",
     prices: {
-      carrefour: 3.49,
-      auchan: 3.35,
-      monoprix: 3.89,
-      lidl: 3.19,
-      leclerc: 3.29,
+      marjane: 38.90,
+      marjanemall: 39.50,
+      aswakassalam: 39.20,
+      carrefour: 38.50,
+      acima: 39.00,
     },
   },
   {
@@ -290,33 +290,44 @@ const productsWithPrices = [
     name: "Chocapic",
     brand: "Nestlé",
     category: "Céréales",
-    image_url: "https://images.openfoodfacts.org/images/products/761/303/936/1528/front_fr.jpg",
+    image_url: "https://www.marjane.ma/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/7/6/7613039361528_1.jpg",
     unit: "430g",
     prices: {
-      carrefour: 3.99,
-      auchan: 3.85,
-      monoprix: 4.29,
-      lidl: 3.69,
-      leclerc: 3.79,
+      marjane: 42.90,
+      marjanemall: 43.50,
+      aswakassalam: 43.20,
+      carrefour: 42.50,
+      acima: 43.00,
     },
   },
 ];
 
 async function seed() {
-  console.log("🌱 Seeding database...\n");
+  console.log("🇲🇦 Seeding database with Moroccan data...\n");
 
   // Initialize DB
   initDb();
 
+  // Clear existing data
+  console.log("🗑️  Clearing existing data...");
+  try {
+    productQueries.deleteAll.run();
+    priceQueries.deleteAll.run();
+    storeQueries.deleteAll.run();
+    console.log("   ✓ Existing data cleared");
+  } catch (error) {
+    console.log("   ⚠ No existing data to clear");
+  }
+
   // Insert stores
-  console.log("📍 Inserting stores...");
+  console.log("\n📍 Inserting Moroccan stores...");
   stores.forEach((store) => {
     storeQueries.insert.run(store.id, store.name, store.logo, store.color, store.website);
     console.log(`   ✓ ${store.name}`);
   });
 
   // Insert products and prices
-  console.log("\n📦 Inserting products and prices...");
+  console.log("\n📦 Inserting products and prices (in MAD)...");
   let priceCount = 0;
 
   productsWithPrices.forEach((product) => {
@@ -330,7 +341,7 @@ async function seed() {
       product.image_url,
       product.unit
     );
-    console.log(`   ✓ ${product.brand} ${product.name}`);
+    console.log(`   ✓ ${product.brand} ${product.name} (${product.unit})`);
 
     // Insert prices for each store
     Object.entries(product.prices).forEach(([storeId, price]) => {
@@ -346,11 +357,14 @@ async function seed() {
   });
 
   console.log("\n" + "=".repeat(50));
-  console.log(`✅ Seed complete!`);
+  console.log(`✅ Seed complete! (Moroccan Market)`);
   console.log(`   Stores: ${stores.length}`);
   console.log(`   Products: ${productsWithPrices.length}`);
   console.log(`   Prices: ${priceCount}`);
+  console.log(`   Currency: MAD (Moroccan Dirham)`);
   console.log("=".repeat(50));
+  console.log("\n💡 Prix en Dirhams marocains (MAD)");
+  console.log("   1 EUR ≈ 10.8 MAD (estimation)");
 }
 
 seed().catch(console.error);
